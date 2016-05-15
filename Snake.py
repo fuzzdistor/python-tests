@@ -15,6 +15,7 @@ Ya es la hora! Ready?
 
 """
 from collections import deque
+import random
 import pygame
 
 #Constantes varias
@@ -41,7 +42,6 @@ PURPLE = (255, 0, 255)
 
 GAME_TEXT = ("Vidas",
 			 "Puntuacion")
-
 
 #Funciones para construcción "sencilla"
 def makeRect(x, y, width=RECT_SIDE, height=RECT_SIDE):
@@ -88,6 +88,30 @@ class Snake():
 		else: 
 			return False
 
+	def start(self, BackGround, desired_segments):
+		self.segment_num = desired_segments
+		playground = BackGround.play_bg
+		margins = BackGround.play_margins
+	
+		x = playground.x + margins['L'] + 4*TILE
+		y = playground.y + margins['T'] + 4*TILE
+	
+		self.segments.clear()
+		
+		for count in range(0, desired_segments):
+			self.add_segment(x, y)
+
+def gridPlacement(Playground):
+
+	x_res = Playground.width % TILE
+	marginL = (x_res + SPACE) / 2
+	y_res = Playground.height % TILE
+	marginT = (y_res + SPACE) / 2
+
+	x_tiles = Playground.width / TILE
+	y_tiles = Playground.height / TILE
+
+	return {'L':marginL, 'T':marginT, 'x':x_tiles, 'y':y_tiles}
 
 class BackGround():
 	white_bg = makeRect(SPACE, SPACE, WINDOW_WIDTH - 2*SPACE, WINDOW_HEIGHT - 2*SPACE)
@@ -95,6 +119,7 @@ class BackGround():
 					   SPACE + 2*WHITE_MARGIN + INFO_BOX,  
 					   WINDOW_WIDTH - 2*SPACE - 2*WHITE_MARGIN, 
 					   WINDOW_HEIGHT - 2*SPACE - 3*WHITE_MARGIN - INFO_BOX)
+	play_margins = gridPlacement(play_bg)
 	info_box = makeRect(SPACE + WHITE_MARGIN, 
 						SPACE + WHITE_MARGIN, 
 						WINDOW_WIDTH - 2*SPACE - 2*WHITE_MARGIN,
@@ -107,22 +132,24 @@ class BackGround():
 
 
 
-def initSnake(Snake, BackGround, segment_num):
-	Snake.segment_num = segment_num
-	playground = BackGround.play_bg
 
-	x_res = playground.width % TILE
-	marginL = (x_res + SPACE) / 2
-	y_res = playground.height % TILE
-	marginT = (y_res + SPACE) / 2
+class Limes():
+	limes = deque()	
+	def makeLime():
 
-	x = playground.x + marginL + 4*TILE
-	y = playground.y + marginT + 4*TILE
 
-	Snake.segments.clear()
-	
-	for count in range(0, segment_num):
-		Snake.add_segment(x, y)
+		
+def limeSpawn(Snake, BackGround, window):
+	x = BackGround.play_bg.x + BackGround.play_margins['L']
+	if (Snake.segments[0].x > 400):
+		x = random.randrange(BackGround.play_bg.x + BackGround.play_margins['L'], 
+							 BackGround.play_bg.right - BackGround.play_margins['L'] + SPACE,
+							 TILE)
+	lime = makeRect(x, BackGround.play_bg.y + BackGround.play_margins['T'])
+	window.fill(YELLOW, lime)
+
+def checkColision():
+	return 0
 
 def checkOutbounds(Snake, BackGround):
 	head_segment = Snake.segments[0]
@@ -135,11 +162,18 @@ def checkOutbounds(Snake, BackGround):
 
 def main():
 
-	pygame.init()
+	refresh_time = 150
+	done = False
+	direction = "right"
 	
 	#Creo un objeto "Ventana" y le pongo un título
 	window = pygame.display.set_mode([WINDOW_WIDTH, WINDOW_HEIGHT])
 	pygame.display.set_caption('Python Wars')
+
+	random.seed()
+	pygame.init()
+	pygame.time.set_timer(pygame.USEREVENT + 1, refresh_time)
+	
 	
 	snake_1 = Snake()
 	
@@ -156,17 +190,8 @@ def main():
 	myClock = pygame.time.Clock()
 
 	background = BackGround()
-	
-	#Creo una bandera para la salida del ciclo del juego
-	done = False
-	direction = "right"
-	
-	refresh_time = 150
 
-	pygame.time.set_timer(pygame.USEREVENT + 1, refresh_time)
-
-	initSnake(snake_1, background, 9)
-	
+	snake_1.start(background, 9)
 	
 	while not done:	
 		#event recive una lista de eventos que evalúo para distintos fines
@@ -201,12 +226,13 @@ def main():
 		
 		
 		if (checkOutbounds(snake_1, background)):
-			initSnake(snake_1, background, 9)
+			snake_1.start(background, 9)
 		#Lleno la pantalla de negro
 		window.fill(BLACK)
 	
 		#Llamo la función que muestra los rect en snake_1
 		background.draw(window)
+		limeSpawn(snake_1, background, window)
 		snake_1.draw(window)
 		window.blit(label, (35, 25))
 		pygame.display.flip()
