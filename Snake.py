@@ -22,6 +22,7 @@ import pygame
 #Constantes varias
 
 #RESOLUCION BAJA
+"""
 WINDOW_WIDTH = 1024
 WINDOW_HEIGHT = 580
 
@@ -32,9 +33,9 @@ TILE = RECT_SIDE + SPACE
 
 WHITE_MARGIN = 8
 INFO_BOX = 82
+"""
 
 #RESOLUCION ALTA
-"""
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 
@@ -45,7 +46,6 @@ TILE = RECT_SIDE + SPACE
 
 WHITE_MARGIN = 12
 INFO_BOX = 82
-"""
 
 #COLORES
 BLACK = (0, 0, 0)
@@ -133,7 +133,10 @@ def gridPlacement(Playground):
 	return {'L':marginL, 'T':marginT, 'x':x_tiles, 'y':y_tiles}
 
 class BackGround():
-	white_bg = makeRect(SPACE, SPACE, WINDOW_WIDTH - 2*SPACE, WINDOW_HEIGHT - 2*SPACE)
+	white_bg = makeRect(SPACE, 
+						SPACE, 
+						WINDOW_WIDTH - 2*SPACE, 
+						WINDOW_HEIGHT - 2*SPACE)
 	play_bg = makeRect(SPACE + WHITE_MARGIN, 
 					   SPACE + 2*WHITE_MARGIN + INFO_BOX,  
 					   WINDOW_WIDTH - 2*SPACE - 2*WHITE_MARGIN, 
@@ -162,8 +165,10 @@ class Limes():
 def limeSpawn(Snake, BackGround, window):
 	x = BackGround.play_bg.x + BackGround.play_margins['L']
 	if (Snake.segments[0].x > 400):
-		x = random.randrange(BackGround.play_bg.x + BackGround.play_margins['L'], 
-							 BackGround.play_bg.right - BackGround.play_margins['L'] + SPACE,
+		x = random.randrange(BackGround.play_bg.x 
+							 + BackGround.play_margins['L'], 
+							 BackGround.play_bg.right 
+							 - BackGround.play_margins['L'] + SPACE,
 							 TILE)
 	lime = makeRect(x, BackGround.play_bg.y + BackGround.play_margins['T'])
 	window.fill(YELLOW, lime)
@@ -200,8 +205,6 @@ def main():
 	
 	#PARATESTEAR
 	myfont = pygame.font.Font("PressStart2P.ttf", 20)
-
-	# render text
 	label = myfont.render("Vidas", 0, WHITE)
 	
 
