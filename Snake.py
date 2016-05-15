@@ -18,7 +18,23 @@ from collections import deque
 import random
 import pygame
 
+
 #Constantes varias
+
+#RESOLUCION BAJA
+WINDOW_WIDTH = 1024
+WINDOW_HEIGHT = 580
+
+RECT_SIDE = 15
+SPACE = 4
+
+TILE = RECT_SIDE + SPACE
+
+WHITE_MARGIN = 8
+INFO_BOX = 82
+
+#RESOLUCION ALTA
+"""
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 
@@ -29,6 +45,7 @@ TILE = RECT_SIDE + SPACE
 
 WHITE_MARGIN = 12
 INFO_BOX = 82
+"""
 
 #COLORES
 BLACK = (0, 0, 0)
@@ -63,7 +80,9 @@ class Snake():
 
 
 	def move(self, direction):
-		mem_position = self.segments[0]
+		#self: Snake 
+		#direction: String ("left, right, up, down")
+		mem_segment = self.segments[0]
 
 		if (direction == "left" and self.prev_direction != "right"):
 			self.segments.appendleft(makeRect(self.segments[0].x - TILE, 
@@ -81,7 +100,7 @@ class Snake():
 			self.segments.appendleft(makeRect(self.segments[0].x, 
 											  self.segments[0].y + TILE))
 
-		if (mem_position != self.segments[0]):
+		if (mem_segment != self.segments[0]):
 			self.prev_direction = direction
 			self.segments.pop()
 			return True
@@ -136,6 +155,7 @@ class BackGround():
 class Limes():
 	limes = deque()	
 	def makeLime():
+		return0
 
 
 		
