@@ -45,17 +45,17 @@ SPACE = 5
 TILE = RECT_SIDE + SPACE
 
 WHITE_MARGIN = 12
-INFO_BOX = 82
+INFO_BOX = 55
 
-#COLORES
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
-CYAN = (0, 255, 255)
-YELLOW = (255, 255, 0)
-PURPLE = (255, 0, 255)
+#COLORES      #R   #G   #B
+BLACK = 	(  0, 	0,	 0)
+WHITE = 	(255, 255, 255)
+RED = 		(255, 	0, 	 0)
+GREEN = 	(  0, 255,   0)
+BLUE = 		(  0, 	0, 255)
+CYAN = 		(  0, 255, 255)
+YELLOW = 	(255, 255,   0)
+PURPLE = 	(255,   0, 255)
 
 GAME_TEXT = ("Vidas",
 			 "Puntuacion")
@@ -73,9 +73,9 @@ class Snake():
 	def add_segment(self, x, y):
 		self.segments.append(makeRect(x, y))
 
-	def draw(self, window):
+	def draw(self, window, color=CYAN):
 		for rectangle in self.segments:
-			window.fill(CYAN, rectangle)
+			window.fill(color, rectangle)
 		window.fill(BLUE, self.segments[self.segment_num - 1])
 
 
@@ -111,14 +111,16 @@ class Snake():
 		self.segment_num = desired_segments
 		playground = BackGround.play_bg
 		margins = BackGround.play_margins
-	
+
 		x = playground.x + margins['L'] + 4*TILE
 		y = playground.y + margins['T'] + 4*TILE
-	
+
 		self.segments.clear()
-		
+
 		for count in range(0, desired_segments):
 			self.add_segment(x, y)
+
+#def toAbs():
 
 def gridPlacement(Playground):
 
@@ -147,26 +149,29 @@ class BackGround():
 						WINDOW_WIDTH - 2*SPACE - 2*WHITE_MARGIN,
 						INFO_BOX) 
 
-	def draw(self, window):
-		window.fill(WHITE, self.white_bg)
+	def draw(self, window, color=WHITE):
+		window.fill(color, self.white_bg)
 		window.fill(BLACK, self.play_bg)
 		window.fill(BLACK, self.info_box)
 
 
-
-
 class Limes():
 	limes = deque()	
-	def makeLime():
-		return0
 
+	def spawnLime(self, background):
+		gridPlacement
+		self.limes.append()
+		return 0
 
-		
+	def draw(self, window, color=YELLOW):
+		for lime in self.limes:
+			window.fill(color, lime)
+
 def limeSpawn(Snake, BackGround, window):
 	x = BackGround.play_bg.x + BackGround.play_margins['L']
 	if (Snake.segments[0].x > 400):
 		x = random.randrange(BackGround.play_bg.x 
-							 + BackGround.play_margins['L'], 
+							 + BackGround.play_margins['L'],
 							 BackGround.play_bg.right 
 							 - BackGround.play_margins['L'] + SPACE,
 							 TILE)
@@ -190,7 +195,7 @@ def main():
 	refresh_time = 150
 	done = False
 	direction = "right"
-	
+
 	#Creo un objeto "Ventana" y le pongo un título
 	window = pygame.display.set_mode([WINDOW_WIDTH, WINDOW_HEIGHT])
 	pygame.display.set_caption('Python Wars')
@@ -198,16 +203,8 @@ def main():
 	random.seed()
 	pygame.init()
 	pygame.time.set_timer(pygame.USEREVENT + 1, refresh_time)
-	
-	
-	snake_1 = Snake()
-	
-	
-	#PARATESTEAR
-	myfont = pygame.font.Font("PressStart2P.ttf", 20)
-	label = myfont.render("Vidas", 0, WHITE)
-	
 
+	snake_1 = Snake()
 
 	#Creo un objeto Clock para manejar los FPS en el ciclo del juego
 	myClock = pygame.time.Clock()
@@ -215,14 +212,14 @@ def main():
 	background = BackGround()
 
 	snake_1.start(background, 9)
-	
+
 	while not done:	
 		#event recive una lista de eventos que evalúo para distintos fines
 		for event in pygame.event.get():
 			#Como salir del loop cuando se cierra la ventana
 			if event.type == pygame.QUIT:
 				done = True
-	
+
 			if event.type == pygame.KEYDOWN:
 				#O cuando se presiona la tecla ESCAPE
 				if event.key == pygame.K_ESCAPE:
@@ -241,26 +238,24 @@ def main():
 					WHITE_MARGIN += 1 
 				if event.key == pygame.K_KP_MINUS:
 					refresh_time -= 50
-							
+
 			if event.type == pygame.USEREVENT + 1:
 				pygame.time.set_timer(pygame.USEREVENT + 1, refresh_time)
 				if not snake_1.move(direction):
 					snake_1.move(snake_1.prev_direction)
-		
-		
+
 		if (checkOutbounds(snake_1, background)):
 			snake_1.start(background, 9)
 		#Lleno la pantalla de negro
 		window.fill(BLACK)
-	
+
 		#Llamo la función que muestra los rect en snake_1
-		background.draw(window)
+		background.draw(window, RED)
 		limeSpawn(snake_1, background, window)
 		snake_1.draw(window)
-		window.blit(label, (35, 25))
 		pygame.display.flip()
 		myClock.tick(60)
-	
+
 	pygame.quit()
 
 main()
